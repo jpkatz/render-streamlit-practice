@@ -7,5 +7,5 @@ def main():
     st.write("Hello, world!")
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8000))
+    port = int(os.environ.get('PORT', 8501))
     main()
