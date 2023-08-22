@@ -1,0 +1,1 @@
+python streamlit run app.py
