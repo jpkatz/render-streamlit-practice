@@ -13,6 +13,10 @@ def load_data():
                      index_col=0)
     return df
 
+@st.cache_data
+def load_column(df, name):
+    return df[name].copy().dropna()
+
 def plot_histogram_pyplot(data, bins):
     start = time.time()
     fig, ax = plt.subplots()
@@ -23,7 +27,7 @@ def plot_histogram_pyplot(data, bins):
 
 def plot_histogram_altair(data, bins):
     start = time.time()
-    fig=alt.Chart(data).mark_bar().encode(
+    fig=alt.Chart(data.reset_index()).mark_bar().encode(
         alt.X("loan_amnt").bin(maxbins=bins),
         y='count()'
     )
@@ -34,25 +38,29 @@ def plot_histogram_altair(data, bins):
 def main():
 
     df = load_data()
+    column_name = 'loan_amnt'
+    column_data = load_column(df, column_name)
 
     st.title('Simple Streamlit App')
-
     st.dataframe(df)
-
-    loan_amnt_data = df.loan_amnt.copy()
+    matplot_placeholder = st.empty()
+    altair_placeholder = st.empty() 
+    
     histo_bins_pyplot = st.slider('Number of histogram bins', 
                            0, 
                            100, 
                            5,
-                           key=1)
-    plot_histogram_pyplot(loan_amnt_data, bins=histo_bins_pyplot)
+                           key='pyplot_bins')
+    
+    
+    plot_histogram_pyplot(column_data, bins=histo_bins_pyplot)
 
     histo_bins_altair = st.slider('Number of histogram bins', 
                            0, 
                            100, 
                            5,
-                           key=2)
-    plot_histogram_altair(loan_amnt_data.dropna().reset_index(), bins=histo_bins_altair)
+                           key='altair_bins')
+    plot_histogram_altair(column_data, bins=histo_bins_altair)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8501))
