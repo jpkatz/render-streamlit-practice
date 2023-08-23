@@ -2,4 +2,3 @@ services:
 - type: web
   name: my-streamlit-app
   buildCommand: streamlit run app.py
-  PYTHON_VERSION: 3.11.4
