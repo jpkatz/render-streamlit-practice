@@ -17,14 +17,16 @@ def load_data():
 def load_column(df, name):
     return df[name].copy().dropna()
 
+@st.cache_data
 def plot_histogram_pyplot(data, bins):
     start = time.time()
     fig, ax = plt.subplots()
     ax.hist(data, bins=bins)
 
     st.pyplot(fig)
-    st.write('The time to load pyplot', time.time() - start)    
+    st.write('The time to load pyplot', time.time() - start)
 
+@st.cache_data
 def plot_histogram_altair(data, bins):
     start = time.time()
     fig=alt.Chart(data.reset_index()).mark_bar().encode(
@@ -33,7 +35,7 @@ def plot_histogram_altair(data, bins):
     )
 
     st.altair_chart(fig)
-    st.write('The time to load altair', time.time() - start)  
+    st.write('The time to load altair', time.time() - start) 
 
 def main():
 
@@ -43,16 +45,12 @@ def main():
 
     st.title('Simple Streamlit App')
     st.dataframe(df)
-    matplot_placeholder = st.empty()
-    altair_placeholder = st.empty() 
-    
+
     histo_bins_pyplot = st.slider('Number of histogram bins', 
                            0, 
                            100, 
                            5,
                            key='pyplot_bins')
-    
-    
     plot_histogram_pyplot(column_data, bins=histo_bins_pyplot)
 
     histo_bins_altair = st.slider('Number of histogram bins', 
